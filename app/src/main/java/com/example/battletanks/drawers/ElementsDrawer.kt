@@ -3,11 +3,13 @@ package com.example.battletanks.drawers
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import com.example.battletanks.CELL_SIZE
 import com.example.battletanks.R
 import com.example.battletanks.enums.Material
 import com.example.battletanks.models.Coordinate
 import com.example.battletanks.models.Element
+import com.example.battletanks.utils.getElementByCoordinates
 
 class ElementsDrawer (val container: FrameLayout) {
     var currentMaterial = Material.EMPTY
@@ -25,9 +27,9 @@ class ElementsDrawer (val container: FrameLayout) {
     }
 
     private fun drawOrReplaceView(coordinate: Coordinate) {
-        val viewOnCoordinate = getElementByCoordinates(coordinate)
+        val viewOnCoordinate = getElementByCoordinates(coordinate, elementsOnContainer)
         if (viewOnCoordinate == null) {
-            drawView(coordinate)
+            selectMaterial(coordinate)
             return
         }
         if (viewOnCoordinate.material != currentMaterial) {
@@ -37,11 +39,11 @@ class ElementsDrawer (val container: FrameLayout) {
 
     private fun replaceView(coordinate: Coordinate) {
         eraseView(coordinate)
-        drawView(coordinate)
+        selectMaterial(coordinate)
     }
 
     private fun eraseView(coordinate: Coordinate) {
-        val elementOnCoordinate = getElementByCoordinates(coordinate)
+        val elementOnCoordinate = getElementByCoordinates(coordinate, elementsOnContainer)
         if (elementOnCoordinate != null) {
             val erasingView = container.findViewById<View>(elementOnCoordinate.viewId)
             container.removeView(erasingView)
@@ -49,27 +51,42 @@ class ElementsDrawer (val container: FrameLayout) {
         }
     }
 
-    fun drawView(coordinate: Coordinate) {
-        val view = ImageView(container.context)
-        val layoutParams = FrameLayout.LayoutParams(CELL_SIZE, CELL_SIZE)
+    fun selectMaterial(coordinate: Coordinate) {
         when (currentMaterial) {
-            Material.EMPTY -> {
-
+            Material.BRICK -> drawView(R.drawable.brick, coordinate)
+            Material.CONCRETE -> drawView(R.drawable.concrete, coordinate)
+            Material.GRASS -> drawView(R.drawable.grass, coordinate)
+            Material.EAGLE -> {
+                removeExistingEagle()
+                drawView(R.drawable.eagle, coordinate, 4, 3)
             }
 
-            Material.BRICK -> view.setImageResource(R.drawable.brick)
-            Material.CONCRETE -> view.setImageResource(R.drawable.concrete)
-            Material.GRASS -> view.setImageResource(R.drawable.grass)
+            Material.EMPTY -> {}
         }
+    }
+
+    private fun removeExistingEagle() {
+        elementsOnContainer.firstOrNull { it.material == Material.EAGLE }?.coordinate?.let {
+            eraseView(it)
+        }
+    }
+
+    private fun drawView(
+        @DrawableRes image: Int,
+        coordinate: Coordinate,
+        width: Int = 1,
+        height: Int = 1
+    ) {
+        val view = ImageView(container.context)
+        val layoutParams = FrameLayout.LayoutParams(width * CELL_SIZE, height * CELL_SIZE)
+        view.setImageResource(image)
         layoutParams.topMargin = coordinate.top
         layoutParams.leftMargin = coordinate.left
         val viewId = View.generateViewId()
         view.id = viewId
         view.layoutParams = layoutParams
         container.addView(view)
-        elementsOnContainer.add(Element(viewId, currentMaterial, coordinate))
-    }
+        elementsOnContainer.add(Element(viewId, currentMaterial, coordinate, width, height))
 
-    private fun getElementByCoordinates(coordinate: Coordinate) =
-        elementsOnContainer.firstOrNull { it.coordinate == coordinate }
+    }
 }

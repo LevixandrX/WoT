@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
             elementsDrawer.currentMaterial = Material.CONCRETE
         }
         binding.editorGrass.setOnClickListener { elementsDrawer.currentMaterial = Material.GRASS }
+        binding.editorEagle.setOnClickListener { elementsDrawer.currentMaterial = Material.EAGLE }
         binding.container.setOnTouchListener { _, event ->
             elementsDrawer.onTouchContainer(event.x, event.y)
             return@setOnTouchListener true
@@ -119,7 +120,8 @@ class MainActivity : AppCompatActivity() {
 
             KEYCODE_SPACE -> bulletDrawer.makeBulletMove(
                 binding.myTank,
-                tankDrawer.currentDirection
+                tankDrawer.currentDirection,
+                elementsDrawer.elementsOnContainer
             )
         }
         return super.onKeyDown(keyCode, event)
