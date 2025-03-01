@@ -1,9 +1,7 @@
 package com.example.battletanks.drawers
 
-import android.app.Activity
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ImageView
 import com.example.battletanks.CELL_SIZE
 import com.example.battletanks.enums.Material
 import com.example.battletanks.models.Coordinate
@@ -29,7 +27,7 @@ class ElementsDrawer(val container: FrameLayout) {
     private fun drawOrReplaceView(coordinate: Coordinate) {
         val viewOnCoordinate = getElementByCoordinates(coordinate, elementsOnContainer)
         if (viewOnCoordinate == null) {
-            drawView(coordinate)
+            createElementDrawView(coordinate)
             return
         }
         if (viewOnCoordinate.material != currentMaterial) {
@@ -43,13 +41,13 @@ class ElementsDrawer(val container: FrameLayout) {
         }
         for (element in elements) {
             currentMaterial = element.material
-            drawView((element.coordinate))
+            drawElement(element)
         }
     }
 
     private fun replaceView(coordinate: Coordinate) {
         eraseView(coordinate)
-        drawView(coordinate)
+        createElementDrawView(coordinate)
     }
 
     private fun eraseView(coordinate: Coordinate) {
@@ -94,15 +92,17 @@ class ElementsDrawer(val container: FrameLayout) {
         }
     }
 
-    private fun drawView(coordinate: Coordinate) {
+    private fun drawElement(element: Element) {
         removeUnwantedInstances()
-        val element = Element(
-            material = currentMaterial,
-            coordinate = coordinate,
-            width = currentMaterial.width,
-            height = currentMaterial.height
-        )
         element.drawElement(container)
         elementsOnContainer.add(element)
+    }
+
+    private fun createElementDrawView(coordinate: Coordinate) {
+        val element = Element(
+            material = currentMaterial,
+            coordinate = coordinate
+        )
+        drawElement(element)
     }
 }

@@ -56,9 +56,7 @@ class EnemyDrawer(
         val enemyTank = Tank(
             Element(
                 material = Material.ENEMY_TANK,
-                coordinate = currentCoordinate,
-                width = Material.ENEMY_TANK.width,
-                height = Material.ENEMY_TANK.height
+                coordinate = currentCoordinate
             ), Direction.DOWN
         )
         enemyTank.element.drawElement(container)
