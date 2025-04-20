@@ -9,4 +9,6 @@ data class Element constructor(
     var coordinate: Coordinate,
     val width: Int = material.width,
     val height: Int = material.height
-)
+) {
+
+}

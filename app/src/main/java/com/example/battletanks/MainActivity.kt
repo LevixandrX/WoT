@@ -39,13 +39,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var playerTank: Tank
     private lateinit var eagle: Element
 
-    private fun createTank(elementWith: Int, elementHeight: Int): Tank {
+    private fun createTank(elementWidth: Int, elementHeight: Int): Tank {
         playerTank = Tank(
             Element(
                 material = Material.PLAYER_TANK,
-                coordinate = getPlayerTankCoordinate(elementWith, elementHeight)
+                coordinate = getPlayerTankCoordinate(elementWidth, elementHeight)
             ), UP,
-            bulletDrawer
+            BulletDrawer(binding.container, elementsDrawer.elementsOnContainer, enemyDrawer)
         )
         return playerTank
     }
@@ -85,10 +85,6 @@ class MainActivity : AppCompatActivity() {
 
     private val levelStorage by lazy {
         LevelStorage(this)
-    }
-
-    private val bulletDrawer by lazy {
-        BulletDrawer(binding.container)
     }
 
     private val enemyDrawer by lazy {
@@ -196,10 +192,7 @@ class MainActivity : AppCompatActivity() {
             KEYCODE_DPAD_DOWN -> move(DOWN)
             KEYCODE_DPAD_LEFT -> move(LEFT)
             KEYCODE_DPAD_RIGHT -> move(RIGHT)
-            KEYCODE_SPACE -> playerTank.bulletDrawer.makeBulletMove(
-                playerTank,
-                elementsDrawer.elementsOnContainer
-            )
+            KEYCODE_SPACE -> playerTank.bulletDrawer.makeBulletMove(playerTank)
         }
         return super.onKeyDown(keyCode, event)
     }
