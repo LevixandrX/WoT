@@ -3,6 +3,7 @@ package com.example.battletanks.drawers
 import android.widget.FrameLayout
 import com.example.battletanks.CELL_SIZE
 import com.example.battletanks.GameCore
+import com.example.battletanks.SoundManager
 import com.example.battletanks.binding
 import com.example.battletanks.enums.CELLS_TANKS_SIZE
 import com.example.battletanks.enums.Direction
@@ -81,6 +82,11 @@ class EnemyDrawer(
     }
 
     private fun goThrounghAllTanks() {
+        if (tanks.isNotEmpty()) {
+            SoundManager.tankMove()
+        } else{
+            SoundManager.tankStop()
+        }
             tanks.toList().forEach{
                 it.move(it.direction, container, elements)
                 if (checkIfChanceBiggerThanRandom(10)) {
@@ -108,7 +114,6 @@ class EnemyDrawer(
     }
 
     fun removeTank(tankIndex: Int) {
-        if (tankIndex < 0) return
         tanks.removeAt(tankIndex)
     }
 }
